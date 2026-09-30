@@ -1,0 +1,246 @@
+/* Optional appearance for native Markdown leaves. Editor layout stays native. */
+body.kn-native-enabled {
+  --kn-bg: #121923;
+  --kn-surface: 20, 28, 39;
+  --kn-raised: #263542;
+  --kn-line: rgba(177, 203, 225, .16);
+  --kn-text-base: #e0e7ef;
+  --kn-heading-base: #f3f7fb;
+  --kn-muted-base: #a7b7c7;
+  --kn-accent-base: #a2e2d7;
+  --kn-ink-strength: 100%;
+  --kn-text: color-mix(in srgb, var(--kn-text-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-heading: color-mix(in srgb, var(--kn-heading-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-muted: color-mix(in srgb, var(--kn-muted-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-accent: color-mix(in srgb, var(--kn-accent-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-shadow: 0 15px 40px #0000001c, inset 0 1px 0 #ffffff08;
+  --kn-font-size: 20px;
+  --kn-font: "Helvetica Neue", "PingFang TC", "Heiti TC", sans-serif;
+  --kn-background-strength: .7;
+  --kn-background-blur: 20px;
+  --kn-panel-opacity: .94;
+  --kn-content-width: 760px;
+  --kn-page-gutter: 24px;
+  /* Native heading/property toggles reach 22px before the text. Lists can
+     extend farther at large font sizes, so reserve their own leading lane. */
+  --kn-control-gutter: max(24px, calc(var(--kn-font-size) * 1.2));
+  --kn-right-safety: 24px;
+  --kn-inner-spacing: 12px;
+  --kn-ambient:
+    radial-gradient(ellipse at 5% 15%, #237e80 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 35%, #7257ab 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 100%, #244879 0%, transparent 60%);
+}
+
+body.kn-native-enabled[data-kn-tone="light"],
+body.kn-native-enabled.theme-light[data-kn-tone="system"] {
+  --kn-bg: #e9eff3;
+  --kn-surface: 249, 251, 252;
+  --kn-raised: #e5edf1;
+  --kn-line: rgba(43, 72, 95, .17);
+  --kn-text-base: #344652;
+  --kn-heading-base: #173546;
+  --kn-muted-base: #596f7c;
+  --kn-accent-base: #236d65;
+  --kn-shadow: 0 15px 40px #153c5710, inset 0 1px 0 #ffffff90;
+}
+
+body.kn-native-enabled[data-kn-background="dusk"] {
+  --kn-ambient:
+    radial-gradient(ellipse at 4% 5%, #9d674b 0%, transparent 52%),
+    radial-gradient(ellipse at 100% 35%, #8a4d80 0%, transparent 54%),
+    radial-gradient(ellipse at 40% 100%, #443b76 0%, transparent 62%);
+}
+
+body.kn-native-enabled[data-kn-background="plain"] { --kn-ambient: none; }
+body.kn-native-enabled[data-kn-background="image"] { --kn-ambient: var(--kn-background-image, none); }
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content {
+  --font-text: var(--kn-font);
+  --font-text-size: var(--kn-font-size);
+  --file-line-width: var(--kn-content-width);
+  --file-margins-x: var(--kn-inner-spacing);
+  --file-margins-y: 32px;
+  --file-margins: var(--file-margins-y) var(--file-margins-x);
+  --line-height-normal: 1.9;
+  --line-height-tight: 1.5;
+  --p-spacing: 1em;
+  --heading-spacing: 2em;
+  --text-normal: var(--kn-text);
+  --text-muted: var(--kn-muted);
+  --text-faint: var(--kn-muted);
+  --text-accent: var(--kn-accent);
+  --text-accent-hover: var(--kn-accent);
+  --background-primary: rgb(var(--kn-surface));
+  --background-primary-alt: var(--kn-raised);
+  --background-secondary: var(--kn-raised);
+  --background-modifier-border: var(--kn-line);
+  --h1-color: var(--kn-heading);
+  --h2-color: var(--kn-heading);
+  --h3-color: var(--kn-heading);
+  --h4-color: var(--kn-heading);
+  --h5-color: var(--kn-heading);
+  --h6-color: var(--kn-heading);
+  --h1-size: 1.6em;
+  --h2-size: 1.2em;
+  --h3-size: 1.08em;
+  --h1-line-height: 1.45;
+  --h2-line-height: 1.5;
+  --h3-line-height: 1.5;
+  --h1-weight: 650;
+  --h2-weight: 650;
+  --h3-weight: 650;
+  --bold-color: var(--kn-heading);
+  --bold-weight: 650;
+  --inline-title-color: var(--kn-heading);
+  --inline-title-font: var(--kn-font);
+  --inline-title-size: 1.6em;
+  --inline-title-line-height: 1.45;
+  --link-color: var(--kn-accent);
+  --link-color-hover: var(--kn-accent);
+  --link-unresolved-color: var(--kn-accent);
+  --link-decoration: none;
+  --link-decoration-hover: underline;
+  --link-external-color: var(--kn-accent);
+  --link-external-color-hover: var(--kn-accent);
+  --list-marker-color: var(--kn-muted);
+  --blockquote-border-color: var(--kn-accent);
+  --blockquote-color: var(--kn-muted);
+  --code-background: var(--kn-raised);
+  --code-normal: var(--kn-text);
+  --hr-color: var(--kn-line);
+  --table-border-color: var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content {
+  position: relative;
+  isolation: isolate;
+  padding: 0;
+  background: var(--kn-bg);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 0;
+  background-image: var(--kn-ambient);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--kn-background-strength);
+  filter: blur(var(--kn-background-blur));
+  clip-path: inset(0);
+  pointer-events: none;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > :is(.markdown-reading-view, .markdown-source-view) {
+  position: relative;
+  box-sizing: border-box;
+  /* Requested margins expose background outside the card. Zero fills the note
+     area; narrow splits retain a 320px card when space permits. */
+  width: max(min(100%, 320px), calc(100% - 2 * var(--kn-page-gutter)));
+  /* Reading Mode sets width:100% inline, so the cap must enforce the same
+     outside spacing without overriding native height or scroll ownership. */
+  max-width: max(min(100%, 320px), calc(100% - 2 * var(--kn-page-gutter)));
+  min-width: 0;
+  margin-inline: auto;
+  border: 1px solid var(--kn-line);
+  border-block-width: 0;
+  border-radius: 0;
+  background: rgba(var(--kn-surface), var(--kn-panel-opacity));
+  box-shadow: 12px 0 28px #00000014, -12px 0 28px #00000014;
+  color: var(--kn-text);
+}
+
+/* Native Obsidian applies these margins to the existing scrollers. Setting the
+   variable here also keeps side-split Markdown leaves consistent with the page. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-reading-view > .markdown-preview-view,
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller {
+  --file-margins-x: var(--kn-inner-spacing);
+  --file-margins: var(--file-margins-y) var(--file-margins-x);
+  /* Inner reading space is independent of the card's outer background margin.
+     Logical padding also follows notes whose writing direction is RTL. */
+  padding-inline-start: calc(var(--kn-inner-spacing) + var(--kn-control-gutter));
+  /* Keep the same safety space whether the OS overlays or reserves its scrollbar. */
+  padding-inline-end: calc(var(--kn-inner-spacing) + var(--kn-right-safety));
+  scrollbar-gutter: stable;
+}
+
+/* The existing preview/editor scrollers continue to own scrolling. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-reading-view > .markdown-preview-view {
+  border-radius: 0;
+  background: transparent;
+  color: var(--kn-text);
+  font-family: var(--kn-font);
+  font-size: var(--kn-font-size);
+  line-height: 1.9;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-source-view.mod-cm6 .cm-scroller {
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--kn-font);
+  font-size: var(--kn-font-size);
+  line-height: 1.9;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor {
+  background: transparent;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-preview-sizer,
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-source-view.mod-cm6 .cm-content {
+  color: var(--kn-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--kn-font);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered h2 {
+  padding-bottom: .5em;
+  border-bottom: 1px solid var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered a.internal-link {
+  text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered a.internal-link:hover {
+  text-decoration: underline;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(h1, h2) a.internal-link {
+  color: var(--kn-heading);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(pre, .callout) {
+  border-radius: 13px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered pre {
+  border: 1px solid var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :not(pre) > code {
+  border-radius: 5px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(img, video) {
+  border-radius: 8px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered a:focus-visible {
+  outline: 2px solid var(--kn-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Keep note actions and its title, without the long folder path above the page. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .view-header-title-parent {
+  display: none;
+}

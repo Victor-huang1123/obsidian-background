@@ -1,0 +1,532 @@
+/* Optional appearance for native Markdown leaves. Editor layout stays native. */
+body.kn-native-enabled {
+  --kn-bg: #121923;
+  --kn-surface: 20, 28, 39;
+  --kn-raised: #263542;
+  --kn-line: rgba(177, 203, 225, .16);
+  --kn-text-base: #e0e7ef;
+  --kn-heading-base: #f3f7fb;
+  --kn-muted-base: #a7b7c7;
+  --kn-accent-base: #a2e2d7;
+  --kn-ink-strength: 100%;
+  --kn-text: color-mix(in srgb, var(--kn-text-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-heading: color-mix(in srgb, var(--kn-heading-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-muted: color-mix(in srgb, var(--kn-muted-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-accent: color-mix(in srgb, var(--kn-accent-base) var(--kn-ink-strength), rgb(var(--kn-surface)));
+  --kn-shadow: 0 15px 40px #0000001c, inset 0 1px 0 #ffffff08;
+  --kn-font-size: 20px;
+  --kn-font: "Helvetica Neue", "PingFang TC", "Heiti TC", sans-serif;
+  --kn-background-strength: .7;
+  --kn-background-blur: 20px;
+  --kn-panel-opacity: .94;
+  --kn-content-width: 760px;
+  --kn-page-gutter: 24px;
+  /* Native heading/property toggles reach 22px before the text. Lists can
+     extend farther at large font sizes, so reserve their own leading lane. */
+  --kn-control-gutter: max(24px, calc(var(--kn-font-size) * 1.2));
+  --kn-right-safety: 24px;
+  --kn-inner-spacing: 12px;
+  --kn-ambient:
+    radial-gradient(ellipse at 5% 15%, #237e80 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 35%, #7257ab 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 100%, #244879 0%, transparent 60%);
+}
+
+body.kn-native-enabled[data-kn-tone="light"],
+body.kn-native-enabled.theme-light[data-kn-tone="system"] {
+  --kn-bg: #e9eff3;
+  --kn-surface: 249, 251, 252;
+  --kn-raised: #e5edf1;
+  --kn-line: rgba(43, 72, 95, .17);
+  --kn-text-base: #344652;
+  --kn-heading-base: #173546;
+  --kn-muted-base: #596f7c;
+  --kn-accent-base: #236d65;
+  --kn-shadow: 0 15px 40px #153c5710, inset 0 1px 0 #ffffff90;
+}
+
+body.kn-native-enabled[data-kn-background="dusk"] {
+  --kn-ambient:
+    radial-gradient(ellipse at 4% 5%, #9d674b 0%, transparent 52%),
+    radial-gradient(ellipse at 100% 35%, #8a4d80 0%, transparent 54%),
+    radial-gradient(ellipse at 40% 100%, #443b76 0%, transparent 62%);
+}
+
+body.kn-native-enabled[data-kn-background="plain"] { --kn-ambient: none; }
+body.kn-native-enabled[data-kn-background="image"] { --kn-ambient: var(--kn-background-image, none); }
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content {
+  --font-text: var(--kn-font);
+  --font-text-size: var(--kn-font-size);
+  --file-line-width: var(--kn-content-width);
+  --file-margins-x: var(--kn-inner-spacing);
+  --file-margins-y: 32px;
+  --file-margins: var(--file-margins-y) var(--file-margins-x);
+  --line-height-normal: 1.9;
+  --line-height-tight: 1.5;
+  --p-spacing: 1em;
+  --heading-spacing: 2em;
+  --text-normal: var(--kn-text);
+  --text-muted: var(--kn-muted);
+  --text-faint: var(--kn-muted);
+  --text-accent: var(--kn-accent);
+  --text-accent-hover: var(--kn-accent);
+  --background-primary: rgb(var(--kn-surface));
+  --background-primary-alt: var(--kn-raised);
+  --background-secondary: var(--kn-raised);
+  --background-modifier-border: var(--kn-line);
+  --h1-color: var(--kn-heading);
+  --h2-color: var(--kn-heading);
+  --h3-color: var(--kn-heading);
+  --h4-color: var(--kn-heading);
+  --h5-color: var(--kn-heading);
+  --h6-color: var(--kn-heading);
+  --h1-size: 1.6em;
+  --h2-size: 1.2em;
+  --h3-size: 1.08em;
+  --h1-line-height: 1.45;
+  --h2-line-height: 1.5;
+  --h3-line-height: 1.5;
+  --h1-weight: 650;
+  --h2-weight: 650;
+  --h3-weight: 650;
+  --bold-color: var(--kn-heading);
+  --bold-weight: 650;
+  --inline-title-color: var(--kn-heading);
+  --inline-title-font: var(--kn-font);
+  --inline-title-size: 1.6em;
+  --inline-title-line-height: 1.45;
+  --link-color: var(--kn-accent);
+  --link-color-hover: var(--kn-accent);
+  --link-unresolved-color: var(--kn-accent);
+  --link-decoration: none;
+  --link-decoration-hover: underline;
+  --link-external-color: var(--kn-accent);
+  --link-external-color-hover: var(--kn-accent);
+  --list-marker-color: var(--kn-muted);
+  --blockquote-border-color: var(--kn-accent);
+  --blockquote-color: var(--kn-muted);
+  --code-background: var(--kn-raised);
+  --code-normal: var(--kn-text);
+  --hr-color: var(--kn-line);
+  --table-border-color: var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content {
+  position: relative;
+  isolation: isolate;
+  padding: 0;
+  background: var(--kn-bg);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 0;
+  background-image: var(--kn-ambient);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--kn-background-strength);
+  filter: blur(var(--kn-background-blur));
+  clip-path: inset(0);
+  pointer-events: none;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > :is(.markdown-reading-view, .markdown-source-view) {
+  position: relative;
+  box-sizing: border-box;
+  /* Requested margins expose background outside the card. Zero fills the note
+     area; narrow splits retain a 320px card when space permits. */
+  width: max(min(100%, 320px), calc(100% - 2 * var(--kn-page-gutter)));
+  /* Reading Mode sets width:100% inline, so the cap must enforce the same
+     outside spacing without overriding native height or scroll ownership. */
+  max-width: max(min(100%, 320px), calc(100% - 2 * var(--kn-page-gutter)));
+  min-width: 0;
+  margin-inline: auto;
+  border: 1px solid var(--kn-line);
+  border-block-width: 0;
+  border-radius: 0;
+  background: rgba(var(--kn-surface), var(--kn-panel-opacity));
+  box-shadow: 12px 0 28px #00000014, -12px 0 28px #00000014;
+  color: var(--kn-text);
+}
+
+/* Native Obsidian applies these margins to the existing scrollers. Setting the
+   variable here also keeps side-split Markdown leaves consistent with the page. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-reading-view > .markdown-preview-view,
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller {
+  --file-margins-x: var(--kn-inner-spacing);
+  --file-margins: var(--file-margins-y) var(--file-margins-x);
+  /* Inner reading space is independent of the card's outer background margin.
+     Logical padding also follows notes whose writing direction is RTL. */
+  padding-inline-start: calc(var(--kn-inner-spacing) + var(--kn-control-gutter));
+  /* Keep the same safety space whether the OS overlays or reserves its scrollbar. */
+  padding-inline-end: calc(var(--kn-inner-spacing) + var(--kn-right-safety));
+  scrollbar-gutter: stable;
+}
+
+/* The existing preview/editor scrollers continue to own scrolling. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-reading-view > .markdown-preview-view {
+  border-radius: 0;
+  background: transparent;
+  color: var(--kn-text);
+  font-family: var(--kn-font);
+  font-size: var(--kn-font-size);
+  line-height: 1.9;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-source-view.mod-cm6 .cm-scroller {
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--kn-font);
+  font-size: var(--kn-font-size);
+  line-height: 1.9;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor {
+  background: transparent;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-preview-sizer,
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-source-view.mod-cm6 .cm-content {
+  color: var(--kn-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--kn-font);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered h2 {
+  padding-bottom: .5em;
+  border-bottom: 1px solid var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered a.internal-link {
+  text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered a.internal-link:hover {
+  text-decoration: underline;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(h1, h2) a.internal-link {
+  color: var(--kn-heading);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(pre, .callout) {
+  border-radius: 13px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered pre {
+  border: 1px solid var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :not(pre) > code {
+  border-radius: 5px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered :is(img, video) {
+  border-radius: 8px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-rendered a:focus-visible {
+  outline: 2px solid var(--kn-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Keep note actions and its title, without the long folder path above the page. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .view-header-title-parent {
+  display: none;
+}
+
+/* The plugin measures each leaf, so a narrow split never gets a fixed sidebar. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content.kn-with-outline.kn-outline-wide {
+  padding-left: 252px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-outline {
+  position: absolute;
+  inset: 12px auto 12px 12px;
+  z-index: 12;
+  display: none;
+  flex-direction: column;
+  width: min(280px, calc(100% - 24px));
+  min-width: 0;
+  min-height: 0;
+  padding: 24px 14px 18px;
+  border: 1px solid var(--kn-line);
+  border-radius: 22px;
+  background: rgba(var(--kn-surface), .97);
+  color: var(--kn-text);
+  box-shadow: 0 18px 55px #00000045, inset 0 1px 0 #ffffff08;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  font-family: var(--font-interface);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-open > .kn-native-outline {
+  display: flex;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-wide > .kn-native-outline {
+  inset: 12px auto 12px 12px;
+  display: flex;
+  width: 220px;
+  background: rgba(var(--kn-surface), .84);
+  box-shadow: var(--kn-shadow);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-outline > header {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin: 0 9px 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--kn-line);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-outline > header small {
+  display: block;
+  margin-bottom: 13px;
+  color: var(--kn-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 1.6px;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  margin: 0;
+  color: var(--kn-heading);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.7;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-items {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+  margin: -3px;
+  padding: 3px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--kn-muted) 30%, transparent) transparent;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-link {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: auto;
+  min-height: 40px;
+  padding: 10px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--kn-muted);
+  font-family: var(--font-interface);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-number {
+  flex: 0 0 19px;
+  color: inherit;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  line-height: inherit;
+  opacity: .7;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-link:hover {
+  background: color-mix(in srgb, var(--kn-raised) 60%, transparent);
+  color: var(--kn-text);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-link.is-active {
+  background: color-mix(in srgb, var(--kn-raised) 85%, transparent);
+  box-shadow: inset 3px 0 0 var(--kn-accent);
+  color: var(--kn-accent);
+}
+
+/* The toggle is a native view-header action; keep its own size and layout. */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content.kn-outline-jump > .markdown-reading-view .is-flashing {
+  background-color: transparent !important;
+  transition: none;
+  mix-blend-mode: normal;
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-toggle.is-active,
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-toggle[aria-expanded="true"] {
+  color: var(--kn-accent);
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] :is(.kn-outline-link, .kn-outline-toggle):focus-visible {
+  outline: 2px solid var(--kn-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] :is(.kn-outline-link, .kn-outline-toggle) {
+    transition: none;
+  }
+}
+
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-link {
+  padding-left: calc(10px + var(--kn-outline-depth, 0) * 10px);
+}
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-empty {
+  padding: 10px;
+  color: var(--kn-muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* Settings keep native Obsidian controls and theme colors. */
+.kn-appearance-modal {
+  width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  border-radius: 24px;
+  box-shadow: 0 30px 100px #00000055;
+}
+
+.kn-appearance-modal .modal-content { padding: 4px 2px; }
+.kn-appearance-modal .modal-title { line-height: 1.45; }
+.kn-appearance-modal .setting-item { gap: 14px; }
+.kn-appearance-modal .setting-item-control { flex-wrap: wrap; }
+.kn-appearance-modal .setting-item-description { line-height: 1.7; }
+
+.kn-appearance-modal .kn-background-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0 24px;
+}
+
+.kn-appearance-modal .kn-background-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  height: auto;
+  padding: 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 14px;
+  background: var(--background-secondary);
+  color: var(--text-normal);
+  box-shadow: none;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.kn-appearance-modal .kn-background-card:hover {
+  background: var(--background-modifier-hover);
+}
+
+.kn-appearance-modal .kn-background-card[data-selected="true"] {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 1px var(--interactive-accent);
+}
+
+.kn-appearance-modal .kn-background-card :is(b, strong, small) {
+  display: block;
+  padding-inline: 3px;
+}
+
+.kn-appearance-modal .kn-background-card small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.kn-appearance-modal .kn-swatch {
+  display: block;
+  width: 100%;
+  height: 61px;
+  border-radius: 9px;
+  background: var(--background-primary);
+}
+
+.kn-appearance-modal .kn-swatch[data-preset="aurora"] {
+  background:
+    radial-gradient(ellipse at 0% 0%, #388f92, transparent 75%),
+    radial-gradient(ellipse at 100% 60%, #8d6cc4, transparent 75%), #1f364c;
+}
+
+.kn-appearance-modal .kn-swatch[data-preset="dusk"] {
+  background:
+    radial-gradient(ellipse at 0% 0%, #b48560, transparent 75%),
+    radial-gradient(ellipse at 100% 60%, #b279aa, transparent 75%), #443554;
+}
+
+.kn-appearance-modal .kn-swatch[data-preset="plain"] {
+  border: 1px solid var(--background-modifier-border);
+}
+
+.kn-appearance-modal .kn-swatch[data-preset="image"] {
+  background:
+    linear-gradient(135deg, transparent 35%, #5d8290 35% 65%, transparent 65%),
+    linear-gradient(45deg, #314a65 45%, #9fbea5 45% 60%, #e4dbbd 60%);
+}
+
+.kn-appearance-modal .kn-modal-help {
+  margin: 10px 0 18px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.kn-appearance-modal .kn-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.kn-appearance-modal .kn-modal-actions button { border-radius: 10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kn-appearance-modal *,
+  .kn-appearance-modal *::before,
+  .kn-appearance-modal *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

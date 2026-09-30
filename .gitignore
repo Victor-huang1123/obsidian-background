@@ -1,0 +1,27 @@
+# Dependencies and local development output
+node_modules/
+coverage/
+dist/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Personal vault data, settings, backgrounds, and licensed fonts
+data.json
+assets/
+.obsidian/
+*.ttf
+*.otf
+*.woff
+*.woff2
+
+# Local-only validation records and historical backups
+validation/
+VALIDATION.md
+legacy-v*/
+backups/
+*.bak
+
+# The three Obsidian runtime files are intentionally tracked.

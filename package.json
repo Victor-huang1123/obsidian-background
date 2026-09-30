@@ -1,0 +1,36 @@
+{
+  "name": "obsidian-background",
+  "version": "0.3.3",
+  "private": true,
+  "description": "Readable typography, local backgrounds and automatic outlines for native Obsidian notes.",
+  "scripts": {
+    "build": "tsc --noEmit && node esbuild.config.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.25.12",
+    "obsidian": "^1.8.7",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.11"
+  },
+  "author": "Victor Huang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Victor-huang1123/obsidian-background.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Victor-huang1123/obsidian-background/issues"
+  },
+  "homepage": "https://github.com/Victor-huang1123/obsidian-background#readme",
+  "overrides": {
+    "obsidian": {
+      "moment": "2.31.0"
+    }
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
