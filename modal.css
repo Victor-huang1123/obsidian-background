@@ -1,67 +1,399 @@
-/* Settings keep native Obsidian controls and theme colors. */
+/* 外觀設定面板：乾淨、安靜、閱讀優先。
+   所有介面 chrome 顏色一律使用 Obsidian 主題變數；只有預覽卡沿用 native.css 的
+   閱讀面色盤（那是使用者調整的內容外觀）。所有選擇器都限定在 .kn-appearance-modal 之下。 */
 .kn-appearance-modal {
-  width: min(560px, calc(100vw - 32px));
-  max-height: calc(100dvh - 40px);
-  border-radius: 24px;
-  box-shadow: 0 30px 100px #00000055;
-}
-
-.kn-appearance-modal .modal-content { padding: 4px 2px; }
-.kn-appearance-modal .modal-title { line-height: 1.45; }
-.kn-appearance-modal .setting-item { gap: 14px; }
-.kn-appearance-modal .setting-item-control { flex-wrap: wrap; }
-.kn-appearance-modal .setting-item-description { line-height: 1.7; }
-
-.kn-appearance-modal .kn-background-options {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin: 18px 0 24px;
-}
-
-.kn-appearance-modal .kn-background-card {
+  --kn-ui-radius-control: 6px;
+  --kn-ui-radius-card: 10px;
+  --kn-ui-radius-float: 14px;
+  --kn-ui-control: 28px;
+  --kn-ui-control-lg: 32px;
+  --kn-ui-border: 1px solid var(--background-modifier-border);
+  --kn-ui-motion: 140ms ease;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  width: min(620px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  border-radius: var(--kn-ui-radius-float);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .28);
+  overflow: hidden;
+}
+
+.kn-appearance-modal .modal-title {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 18px 48px 0 22px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.kn-appearance-modal .modal-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 22px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.kn-appearance-modal .kn-panel {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  height: auto;
-  padding: 8px;
-  border: 1px solid var(--background-modifier-border);
-  border-radius: 14px;
-  background: var(--background-secondary);
   color: var(--text-normal);
-  box-shadow: none;
-  font-size: 12px;
+  font-size: var(--font-ui-small);
   line-height: 1.5;
-  text-align: left;
+}
+
+/* ---- 共用文字層級 ---------------------------------------------------- */
+.kn-appearance-modal .kn-group-title {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+
+.kn-appearance-modal :is(.kn-panel-help, .kn-note, .kn-group-note, .kn-field-hint) {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.kn-appearance-modal .kn-group-note { margin-top: 6px; }
+
+/* ---- 頂部：說明與總開關 ------------------------------------------------ */
+.kn-appearance-modal .kn-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 6px 0 14px;
+}
+
+.kn-appearance-modal .kn-panel-help { flex: 1 1 240px; }
+
+.kn-appearance-modal .kn-master {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--kn-ui-control);
+  color: var(--text-normal);
+  font-size: var(--font-ui-small);
+  font-weight: 500;
   cursor: pointer;
 }
 
-.kn-appearance-modal .kn-background-card:hover {
-  background: var(--background-modifier-hover);
+/* Obsidian 原生 checkbox-container 已有外觀；這裡只補鍵盤焦點。 */
+.kn-appearance-modal .checkbox-container { flex: 0 0 auto; }
+/* 隱藏的原生 checkbox 不能自己接收點擊，否則瀏覽器預先切換與我們的處理會互相抵消。 */
+.kn-appearance-modal .checkbox-container input[type="checkbox"] { pointer-events: none; }
+
+/* ---- 即時預覽卡 -------------------------------------------------------- */
+.kn-appearance-modal .kn-preview {
+  /* 由 appearance-panel.ts 以 style.setProperty 覆寫 */
+  --kn-pv-font: "Helvetica Neue", "PingFang TC", "Noto Sans TC", sans-serif;
+  --kn-pv-font-size: 14px;
+  --kn-pv-ink: 100%;
+  --kn-pv-width: 72%;
+  --kn-pv-gutter: 7%;
+  --kn-pv-strength: .7;
+  --kn-pv-blur: 10px;
+  --kn-pv-opacity: .94;
+  --kn-pv-image: none;
+  /* 閱讀面色盤：與 native.css 的深色預設相同 */
+  --kn-pv-bg: #121923;
+  --kn-pv-surface: 20, 28, 39;
+  --kn-pv-line: rgba(177, 203, 225, .16);
+  --kn-pv-text-base: #e0e7ef;
+  --kn-pv-heading-base: #f3f7fb;
+  --kn-pv-accent-base: #a2e2d7;
+  --kn-pv-text: color-mix(in srgb, var(--kn-pv-text-base) var(--kn-pv-ink), rgb(var(--kn-pv-surface)));
+  --kn-pv-heading: color-mix(in srgb, var(--kn-pv-heading-base) var(--kn-pv-ink), rgb(var(--kn-pv-surface)));
+  --kn-pv-accent: color-mix(in srgb, var(--kn-pv-accent-base) var(--kn-pv-ink), rgb(var(--kn-pv-surface)));
+  --kn-pv-ambient:
+    radial-gradient(ellipse at 5% 15%, #237e80 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 35%, #7257ab 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 100%, #244879 0%, transparent 60%);
+  position: relative;
+  isolation: isolate;
+  height: 164px;
+  margin: 0 0 16px;
+  border: var(--kn-ui-border);
+  border-radius: var(--kn-ui-radius-card);
+  background: var(--kn-pv-bg);
+  overflow: hidden;
+  contain: paint;
 }
 
-.kn-appearance-modal .kn-background-card[data-selected="true"] {
-  border-color: var(--interactive-accent);
-  box-shadow: 0 0 0 1px var(--interactive-accent);
+.kn-appearance-modal .kn-preview[data-tone="light"],
+body.theme-light .kn-appearance-modal .kn-preview[data-tone="system"] {
+  --kn-pv-bg: #e9eff3;
+  --kn-pv-surface: 249, 251, 252;
+  --kn-pv-line: rgba(43, 72, 95, .17);
+  --kn-pv-text-base: #344652;
+  --kn-pv-heading-base: #173546;
+  --kn-pv-accent-base: #236d65;
 }
 
-.kn-appearance-modal .kn-background-card :is(b, strong, small) {
-  display: block;
-  padding-inline: 3px;
+.kn-appearance-modal .kn-preview[data-background="dusk"] {
+  --kn-pv-ambient:
+    radial-gradient(ellipse at 4% 5%, #9d674b 0%, transparent 52%),
+    radial-gradient(ellipse at 100% 35%, #8a4d80 0%, transparent 54%),
+    radial-gradient(ellipse at 40% 100%, #443b76 0%, transparent 62%);
 }
 
-.kn-appearance-modal .kn-background-card small {
+.kn-appearance-modal .kn-preview[data-background="plain"] { --kn-pv-ambient: none; }
+.kn-appearance-modal .kn-preview[data-background="image"] { --kn-pv-ambient: var(--kn-pv-image); }
+
+.kn-appearance-modal .kn-preview-ambient {
+  position: absolute;
+  inset: -16px;
+  z-index: 0;
+  background-image: var(--kn-pv-ambient);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--kn-pv-strength);
+  filter: blur(var(--kn-pv-blur));
+  pointer-events: none;
+}
+
+.kn-appearance-modal .kn-preview-page {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  height: calc(100% - 18px);
+  margin: 18px var(--kn-pv-gutter) 0;
+  padding: 14px 18px;
+  border: 1px solid var(--kn-pv-line);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: rgba(var(--kn-pv-surface), var(--kn-pv-opacity));
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, .08);
+  color: var(--kn-pv-text);
+  font-family: var(--kn-pv-font);
+  font-size: var(--kn-pv-font-size);
+  line-height: 1.75;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 正文欄：寬度隨「正文寬度上限」縮放並置中，對應實際筆記的可讀行寬。 */
+.kn-appearance-modal .kn-preview-column {
+  box-sizing: border-box;
+  width: var(--kn-pv-width);
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.kn-appearance-modal .kn-preview-title {
+  margin: 0 0 .35em;
+  color: var(--kn-pv-heading);
+  font-size: 1.45em;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.kn-appearance-modal .kn-preview-text {
+  margin: 0;
+}
+
+.kn-appearance-modal .kn-preview-link { color: var(--kn-pv-accent); }
+
+.kn-appearance-modal .kn-preview-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+  padding: 1px 8px;
+  border: var(--kn-ui-border);
+  border-radius: 999px;
+  background: var(--background-primary);
   color: var(--text-muted);
+  font-family: var(--font-interface);
   font-size: 10px;
+  line-height: 1.6;
 }
 
+.kn-appearance-modal .kn-preview[data-enabled="false"] .kn-preview-badge { color: var(--text-warning, var(--text-muted)); }
+
+/* ---- 分群與欄位 -------------------------------------------------------- */
+.kn-appearance-modal .kn-group {
+  padding: 14px 0 12px;
+  border-top: var(--kn-ui-border);
+}
+
+.kn-appearance-modal .kn-field {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 12px;
+  min-height: 36px;
+  padding: 3px 0;
+}
+
+.kn-appearance-modal .kn-field-label {
+  color: var(--text-normal);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.4;
+}
+
+.kn-appearance-modal .kn-field-control {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.kn-appearance-modal .kn-field-hint {
+  grid-column: 2;
+  margin-top: -2px;
+  font-size: 11px;
+}
+
+.kn-appearance-modal .kn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 4px 0;
+}
+
+.kn-appearance-modal .kn-row > p { flex: 1 1 220px; }
+.kn-appearance-modal .kn-row-buttons { display: flex; flex: 0 0 auto; gap: 8px; }
+.kn-appearance-modal .kn-image-actions { margin-bottom: 6px; }
+.kn-appearance-modal [hidden] { display: none !important; }
+
+/* ---- 分段切換 ---------------------------------------------------------- */
+.kn-appearance-modal .kn-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  max-width: 100%;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--background-secondary);
+}
+
+.kn-appearance-modal .kn-segment {
+  flex: 1 1 auto;
+  height: 24px;
+  min-width: 0;
+  padding: 0 11px;
+  border: 0;
+  border-radius: var(--kn-ui-radius-control);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+  line-height: 24px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--kn-ui-motion), color var(--kn-ui-motion), box-shadow var(--kn-ui-motion);
+}
+
+.kn-appearance-modal .kn-segment:hover { color: var(--text-normal); }
+
+.kn-appearance-modal .kn-segment[aria-pressed="true"] {
+  background: var(--background-primary);
+  color: var(--text-normal);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+}
+
+/* ---- 滑桿 -------------------------------------------------------------- */
+.kn-appearance-modal .kn-range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: var(--kn-ui-control);
+}
+
+.kn-appearance-modal .kn-range-input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.kn-appearance-modal .kn-range-value {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ---- 背景預設卡 -------------------------------------------------------- */
+.kn-appearance-modal .kn-bg-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.kn-appearance-modal .kn-bg-card {
+  display: flex;
+  flex-direction: column;
+  /* Obsidian's button default centres children; a stretched column keeps the
+     swatch full-width instead of collapsing an empty span to zero width. */
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 6px;
+  height: auto;
+  min-width: 0;
+  padding: 6px;
+  border: var(--kn-ui-border);
+  border-radius: var(--kn-ui-radius-card);
+  background: var(--background-secondary);
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--kn-ui-motion), background-color var(--kn-ui-motion), color var(--kn-ui-motion);
+}
+
+.kn-appearance-modal .kn-bg-card:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.kn-appearance-modal .kn-bg-card[aria-pressed="true"] {
+  border-color: var(--interactive-accent);
+  color: var(--text-normal);
+  box-shadow: inset 0 0 0 1px var(--interactive-accent);
+}
+
+.kn-appearance-modal .kn-bg-card:disabled { opacity: .6; cursor: progress; }
+
+.kn-appearance-modal .kn-bg-card-label {
+  padding: 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 色票描繪的是筆記背景本身，因此沿用閱讀面的色彩。 */
 .kn-appearance-modal .kn-swatch {
   display: block;
+  box-sizing: border-box;
   width: 100%;
-  height: 61px;
-  border-radius: 9px;
+  flex: none;
+  height: 44px;
+  border-radius: var(--kn-ui-radius-control);
   background: var(--background-primary);
+  background-size: cover;
+  background-position: center;
 }
 
 .kn-appearance-modal .kn-swatch[data-preset="aurora"] {
@@ -77,34 +409,113 @@
 }
 
 .kn-appearance-modal .kn-swatch[data-preset="plain"] {
-  border: 1px solid var(--background-modifier-border);
+  border: var(--kn-ui-border);
+  background: linear-gradient(180deg, #121923, #121923 50%, #e9eff3 50%);
 }
 
-.kn-appearance-modal .kn-swatch[data-preset="image"] {
-  background:
-    linear-gradient(135deg, transparent 35%, #5d8290 35% 65%, transparent 65%),
-    linear-gradient(45deg, #314a65 45%, #9fbea5 45% 60%, #e4dbbd 60%);
+.kn-appearance-modal .kn-bg-card[data-empty="true"] .kn-swatch[data-preset="image"] {
+  position: relative;
+  border: 1px dashed var(--text-faint);
+  background: var(--background-primary);
 }
 
-.kn-appearance-modal .kn-modal-help {
-  margin: 10px 0 18px;
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.8;
-  overflow-wrap: anywhere;
+.kn-appearance-modal .kn-bg-card[data-empty="true"] .kn-swatch[data-preset="image"]::after {
+  content: "+";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-faint);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
 }
 
-.kn-appearance-modal .kn-modal-actions {
+/* ---- 進階（details） ------------------------------------------------------ */
+.kn-appearance-modal .kn-advanced > summary {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 24px;
-  padding-top: 18px;
-  border-top: 1px solid var(--background-modifier-border);
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
 }
 
-.kn-appearance-modal .kn-modal-actions button { border-radius: 10px; }
+.kn-appearance-modal .kn-advanced > summary::-webkit-details-marker { display: none; }
+
+.kn-appearance-modal .kn-advanced > summary::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin-left: 2px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--kn-ui-motion);
+}
+
+.kn-appearance-modal .kn-advanced[open] > summary::before { transform: rotate(45deg); }
+.kn-appearance-modal .kn-advanced:not([open]) > summary { margin-bottom: 0; }
+
+/* ---- 按鈕 -------------------------------------------------------------- */
+.kn-appearance-modal .kn-button {
+  height: var(--kn-ui-control);
+  padding: 0 12px;
+  border: var(--kn-ui-border);
+  border-radius: var(--kn-ui-radius-control);
+  background: var(--interactive-normal);
+  box-shadow: none;
+  color: var(--text-normal);
+  font-size: var(--font-ui-smaller);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--kn-ui-motion), border-color var(--kn-ui-motion);
+}
+
+.kn-appearance-modal .kn-button:hover { background: var(--interactive-hover); }
+.kn-appearance-modal .kn-button:disabled { opacity: .6; cursor: progress; }
+
+.kn-appearance-modal .kn-panel-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 12px 0 18px;
+  border-top: var(--kn-ui-border);
+  background: var(--modal-background, var(--background-primary));
+}
+
+.kn-appearance-modal .kn-panel-actions .mod-cta {
+  height: var(--kn-ui-control-lg);
+  padding: 0 18px;
+  border-radius: var(--kn-ui-radius-control);
+  font-size: var(--font-ui-small);
+}
+
+/* ---- 焦點 -------------------------------------------------------------- */
+.kn-appearance-modal :is(button, input, summary, [role="switch"]):focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ---- 窄視窗（360px 仍可用） ------------------------------------------------ */
+@media (max-width: 480px) {
+  .kn-appearance-modal .modal-title { padding-inline: 16px 44px; }
+  .kn-appearance-modal .modal-content { padding-inline: 16px; }
+  .kn-appearance-modal .kn-field { grid-template-columns: minmax(0, 1fr); }
+  .kn-appearance-modal .kn-field-hint { grid-column: 1; }
+  .kn-appearance-modal .kn-bg-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kn-appearance-modal .kn-segmented { display: flex; }
+  .kn-appearance-modal .kn-preview { height: 156px; }
+  .kn-appearance-modal .kn-preview-page { padding: 12px 14px; }
+  /* 窄卡片放不下正文寬度的比例，改以可讀性優先 */
+  .kn-appearance-modal .kn-preview-column { width: 100%; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .kn-appearance-modal *,

@@ -12,14 +12,14 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-
   width: min(280px, calc(100% - 24px));
   min-width: 0;
   min-height: 0;
-  padding: 24px 14px 18px;
+  padding: 16px 12px 14px;
   border: 1px solid var(--kn-line);
-  border-radius: 22px;
-  background: rgba(var(--kn-surface), .97);
+  border-radius: 12px;
+  background: rgba(var(--kn-surface), .94);
   color: var(--kn-text);
-  box-shadow: 0 18px 55px #00000045, inset 0 1px 0 #ffffff08;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 12px 32px #00000030, inset 0 1px 0 #ffffff08;
+  backdrop-filter: blur(12px) saturate(1.1);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
   font-family: var(--font-interface);
   overflow: hidden;
   box-sizing: border-box;
@@ -40,19 +40,19 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline
 body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-outline > header {
   flex: 0 0 auto;
   min-width: 0;
-  margin: 0 9px 20px;
-  padding-bottom: 20px;
+  margin: 0 8px 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--kn-line);
 }
 
 body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-outline > header small {
   display: block;
-  margin-bottom: 13px;
+  margin-bottom: 6px;
   color: var(--kn-muted);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.6;
-  letter-spacing: 1.6px;
+  letter-spacing: .08em;
 }
 
 body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-title {
@@ -61,9 +61,9 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline
   -webkit-line-clamp: 3;
   margin: 0;
   color: var(--kn-heading);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.7;
+  line-height: 1.5;
   overflow: hidden;
   overflow-wrap: anywhere;
 }
@@ -72,7 +72,7 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
   min-width: 0;
   min-height: 0;
   margin: -3px;
@@ -91,10 +91,10 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline
   gap: 8px;
   width: 100%;
   height: auto;
-  min-height: 40px;
-  padding: 10px 10px;
+  min-height: 36px;
+  padding: 8px 10px;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: 8px;
   background: transparent;
   box-shadow: none;
   color: var(--kn-muted);
@@ -105,7 +105,7 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline
   text-align: left;
   white-space: normal;
   cursor: pointer;
-  transition: background-color .15s ease, color .15s ease;
+  transition: background-color 140ms ease, color 140ms ease;
 }
 
 body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-number {
@@ -153,6 +153,15 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] :is(.kn-out
 @media (prefers-reduced-motion: reduce) {
   body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] :is(.kn-outline-link, .kn-outline-toggle) {
     transition: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-native-outline,
+  body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .kn-outline-wide > .kn-native-outline {
+    background: rgb(var(--kn-surface));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
 

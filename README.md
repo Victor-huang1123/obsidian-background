@@ -20,7 +20,7 @@ Obsidian Background 直接套用在 Obsidian 原生筆記的**閱讀模式與即
 
 需要 Obsidian **1.6.0 或以上版本**。目前請從 GitHub Releases 手動安裝。
 
-1. 前往[最新版本](https://github.com/Victor-huang1123/obsidian-background/releases/latest)，下載 `obsidian-background-0.3.3.zip`。
+1. 前往[最新版本](https://github.com/Victor-huang1123/obsidian-background/releases/latest)，下載該版本的 `obsidian-background-<版本>.zip`。
 2. 解壓縮，將其中的 `knowledge-space` 資料夾放入 Vault 的 `.obsidian/plugins/`。
 3. 重新啟動 Obsidian，或重新載入外掛。
 4. 到「設定 → 社群外掛」，允許使用社群外掛，並啟用 **Obsidian Background**。
@@ -45,24 +45,28 @@ Your Vault/
 
 點左側工具列的**調色盤圖示「筆記外觀與背景」**，或從命令面板執行同名命令，開啟外觀設定。設定會自動儲存，也可以從外掛的設定頁進入。
 
+設定面板頂部是「套用到所有筆記」總開關與一張**即時預覽卡**：迷你筆記頁會直接套用目前的字體、字級、文字明暗、背景、濃度、柔焦與面板不透明度，不必關掉面板就能看出差異。下方依用途分成**閱讀、背景、目錄、進階**四群；進階預設收合。
+
 筆記上方工具列的**前進箭頭旁**有「本篇目錄」圖示，可以展開或收合目錄。寬頁的目錄停靠在左側；窄頁則從左上方浮出，選擇章節後自動收合。也能從命令面板執行「顯示本篇目錄」。沒有章節標題的筆記會顯示空目錄提示。
 
 關閉「套用到所有筆記」即可移除外掛套用的外觀與目錄，恢復原本的筆記介面。
 
 ## 外觀設定
 
-| 設定 | 範圍或選項 | 用途 |
-| --- | --- | --- |
-| 字體 | 清晰黑體、書頁宋體、微軟正黑體 | 選擇正文的字體風格 |
-| 正文字級 | 12–32px | 放大或縮小正文 |
-| 文字明暗 | 35–100% | 數值越低，文字越柔和 |
-| 正文寬度上限 | 360–1600px | 控制每行文字的最大寬度 |
-| 卡片外側左右留白 | 每側 0–300px | 調整面板左右露出的背景範圍 |
-| 閱讀面板不透明度 | 0–100% | 0% 透明、100% 不透明，不影響文字透明度 |
-| 背景 | 極光、暮色、純色、本機圖片 | 選擇背景樣式 |
-| 背景濃度 | 0–100% | 調整背景效果的強度 |
-| 背景柔焦 | 0–40px | 模糊背景 |
-| 色系 | 跟隨 Obsidian、深色、淺色 | 選擇面板與文字色系 |
+| 分群 | 設定 | 範圍或選項 | 用途 |
+| --- | --- | --- | --- |
+| 閱讀 | 字體 | 清晰黑體、書頁宋體、微軟正黑體（分段切換） | 選擇正文的字體風格 |
+| 閱讀 | 正文字級 | 12–32px | 放大或縮小正文 |
+| 閱讀 | 文字明暗 | 35–100% | 數值越低，文字越柔和 |
+| 閱讀 | 正文寬度上限 | 360–1600px | 每行正文最寬的像素數，不依賴 Obsidian 的「限制編輯行寬」開關；上限比視窗寬時正文會鋪滿卡片 |
+| 閱讀 | 色系 | 跟隨 Obsidian、深色、淺色（分段切換） | 選擇面板與文字色系 |
+| 背景 | 背景 | 極光、暮色、純色、本機圖片（預設卡） | 選擇背景樣式；圖片卡顯示已匯入圖片的縮圖 |
+| 背景 | 背景濃度 | 0–100% | 調整背景效果的強度 |
+| 背景 | 背景柔焦 | 0–40px | 模糊背景 |
+| 背景 | 閱讀面板不透明度 | 0–100% | 0% 透明、100% 不透明，不影響文字透明度 |
+| 目錄 | 顯示目前目錄 | — | 關閉面板並展開目前筆記的目錄 |
+| 進階 | 卡片外側左右留白 | 每側 0–300px | 調整面板左右露出的背景範圍 |
+| 進階 | 重設外觀 | — | 恢復預設值；保留總開關狀態與已匯入的圖片 |
 
 **左右留白設為 0px 時，面板會鋪滿可用的筆記區域。**數值越大，兩側露出的背景越多；窄視窗會自動縮減實際留白，保留可閱讀的寬度。面板上下貼齊原生筆記區域，正文內側另外保留折疊按鈕與捲軸所需的空間。
 
@@ -114,9 +118,9 @@ npm run build
 - Open the automatic chapter outline beside the forward navigation arrow. It docks on the left in wide panes and opens as an overlay in narrow panes.
 - Use Microsoft JhengHei when available, with system-font fallbacks. No proprietary font files are distributed.
 
-**Install:** download `obsidian-background-0.3.3.zip` from the [latest release](https://github.com/Victor-huang1123/obsidian-background/releases/latest), extract `knowledge-space/` into your Vault's `.obsidian/plugins/`, reload Obsidian and enable **Obsidian Background** under Community Plugins. The plugin ID and installation folder remain **`knowledge-space`** for compatibility with existing installations. Alternatively, place the release's `main.js`, `manifest.json` and `styles.css` in that folder. Obsidian 1.6.0 or newer is required. Preserve `data.json` and `assets/` when updating.
+**Install:** download the matching `obsidian-background-<version>.zip` from the [latest release](https://github.com/Victor-huang1123/obsidian-background/releases/latest), extract `knowledge-space/` into your Vault's `.obsidian/plugins/`, reload Obsidian and enable **Obsidian Background** under Community Plugins. The plugin ID and installation folder remain **`knowledge-space`** for compatibility with existing installations. Alternatively, place the release's `main.js`, `manifest.json` and `styles.css` in that folder. Obsidian 1.6.0 or newer is required. Preserve `data.json` and `assets/` when updating.
 
-**Use:** open the palette icon in the left ribbon to adjust appearance. Turn off 「套用到所有筆記」 to remove the plugin's styling and outline. Imported backgrounds and settings stay in the plugin folder; the plugin makes no upload or telemetry requests. Your Vault sync tool may still sync those files.
+**Use:** open the palette icon in the left ribbon to adjust appearance. The panel starts with a live preview card and groups the controls into Reading, Background, Outline and Advanced (collapsed by default). Turn off 「套用到所有筆記」 to remove the plugin's styling and outline. Imported backgrounds and settings stay in the plugin folder; the plugin makes no upload or telemetry requests. Your Vault sync tool may still sync those files.
 
 **Compatibility:** Reading Mode and Live Preview have been tested on macOS desktop. Mobile has not been verified, and custom themes or CSS snippets may affect layout.
 

@@ -1,5 +1,8 @@
 type Listener = (event: Record<string, unknown>) => void;
-type Options = string | { cls?: string; text?: string; attr?: Record<string, string> };
+type Options = string | {
+  cls?: string; text?: string; attr?: Record<string, string>;
+  type?: string; value?: string; title?: string; placeholder?: string;
+};
 
 export class EventSurface {
   listeners = new Map<string, Set<Listener>>();
@@ -9,9 +12,19 @@ export class EventSurface {
   }
   removeEventListener(type: string, callback: Listener): void { this.listeners.get(type)?.delete(callback); }
   emit(type: string, event: Record<string, unknown> = {}): void {
-    for (const listener of this.listeners.get(type) ?? []) listener({ target: this, ...event });
+    // 預設提供 preventDefault／stopPropagation，讓控制項的事件處理可直接呼叫。
+    const base = { target: this, preventDefault: (): void => undefined, stopPropagation: (): void => undefined };
+    for (const listener of [...(this.listeners.get(type) ?? [])]) listener({ ...base, ...event });
   }
   listenerCount(): number { return [...this.listeners.values()].reduce((sum, listeners) => sum + listeners.size, 0); }
+}
+
+/** 記錄 style.setProperty 的結果，供測試讀回預覽卡的 CSS 變數。 */
+export class TestStyle {
+  properties = new Map<string, string>();
+  setProperty(name: string, value: string): void { this.properties.set(name, value); }
+  removeProperty(name: string): void { this.properties.delete(name); }
+  getPropertyValue(name: string): string { return this.properties.get(name) ?? ''; }
 }
 
 export class TestDocument extends EventSurface {
@@ -54,9 +67,16 @@ export class TestElement extends EventSurface {
   };
   attrs: Record<string, string> = {};
   dataset: Record<string, string> = {};
-  style = { setProperty: (_name: string, _value: string): void => undefined };
+  style = new TestStyle();
   textContent = '';
   title = '';
+  // 表單控制項屬性（input／button／details）。
+  type = '';
+  value = '';
+  checked = false;
+  disabled = false;
+  open = false;
+  files: unknown[] | null = null;
   width = 800;
   top = 100;
   clientHeight = 600;
@@ -69,9 +89,24 @@ export class TestElement extends EventSurface {
     const settings = typeof options === 'string' ? { cls: options } : options;
     if (settings.cls) node.addClass(...settings.cls.split(' '));
     if (settings.text) node.setText(settings.text);
+    if (settings.type) { node.type = settings.type; node.setAttribute('type', settings.type); }
+    if (settings.value !== undefined) node.value = settings.value;
+    if (settings.title) { node.title = settings.title; node.setAttribute('title', settings.title); }
+    if (settings.placeholder) node.setAttribute('placeholder', settings.placeholder);
     for (const [key, value] of Object.entries(settings.attr ?? {})) node.setAttribute(key, value);
     return this.appendChild(node);
   }
+  /** 合計自己與所有子孫的監聽器數量，供「關閉後無殘留」的斷言使用。 */
+  deepListenerCount(): number {
+    return this.listenerCount() + this.children.reduce((sum, child) => sum + child.deepListenerCount(), 0);
+  }
+  /** 依文字內容尋找第一個符合的子孫元素。 */
+  findText(text: string, tag?: string): TestElement | undefined {
+    if (this.textContent === text && (!tag || this.tagName === tag)) return this;
+    for (const child of this.children) { const found = child.findText(text, tag); if (found) return found; }
+    return undefined;
+  }
+  click(): void { this.emit('click'); }
   createDiv(options: Options = {}): TestElement { return this.createEl('div', options); }
   createSpan(options: Options = {}): TestElement { return this.createEl('span', options); }
   appendChild(node: TestElement): TestElement {
@@ -85,7 +120,11 @@ export class TestElement extends EventSurface {
     this.attrs[name] = value;
     if (name.startsWith('data-')) this.dataset[name.slice(5)] = value;
   }
-  removeAttribute(name: string): void { delete this.attrs[name]; }
+  removeAttribute(name: string): void {
+    delete this.attrs[name];
+    if (name.startsWith('data-')) delete this.dataset[name.slice(5)];
+  }
+  getAttribute(name: string): string | null { return name in this.attrs ? this.attrs[name] : null; }
   setText(text: string): void { this.textContent = text; }
   empty(): void { for (const child of [...this.children]) child.remove(); }
   remove(): void {

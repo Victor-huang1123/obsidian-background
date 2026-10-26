@@ -1,7 +1,7 @@
 {
   "id": "knowledge-space",
   "name": "Obsidian Background",
-  "version": "0.3.3",
+  "version": "0.4.1",
   "minAppVersion": "1.6.0",
   "description": "Readable typography, local backgrounds and automatic outlines for native notes.",
   "author": "Victor Huang",

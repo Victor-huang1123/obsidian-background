@@ -2,6 +2,8 @@ import { MarkdownView, Notice, Plugin, PluginSettingTab, Setting, TFile, normali
 import { AppearanceModal } from './modals';
 import { NativeOutline } from './outline';
 import { LocalFonts } from './local-fonts';
+import { fontStack } from './font-stacks';
+import { createResourceCache, cssUrl } from './resource-url';
 import { DEFAULT_SETTINGS, normalizeSettings, type SpaceSettings } from './settings';
 
 const APPEARANCE_PROPERTIES = ['--kn-font-size', '--kn-font', '--kn-background-strength', '--kn-background-blur', '--kn-panel-opacity', '--kn-background-image', '--kn-ink-strength', '--kn-content-width', '--kn-page-gutter'];
@@ -15,6 +17,10 @@ export default class KnowledgeSpacePlugin extends Plugin {
   private unloaded = false;
   private localFonts: LocalFonts | null = null;
   private saveQueue: Promise<void> = Promise.resolve();
+  private saveTimer: number | null = null;
+  private pendingSave: { done: Promise<void>; resolve: () => void } | null = null;
+  /** 背景圖的資源 URL 依路徑快取；每次重算會帶新的快取參數，令整頁背景重新載入而閃爍。 */
+  readonly resourcePath = createResourceCache(path => this.app.vault.adapter.getResourcePath(path));
 
   async onload(): Promise<void> {
     this.settings = normalizeSettings(await this.loadData());
@@ -23,6 +29,9 @@ export default class KnowledgeSpacePlugin extends Plugin {
     this.addCommand({ id: 'reading-appearance', name: '筆記外觀與背景', callback: () => this.openAppearance() });
     this.addCommand({ id: 'show-note-outline', name: '顯示本篇目錄', callback: () => this.revealOutline() });
     this.addSettingTab(new SpaceSettingTab(this));
+    // Obsidian does not unload plugins on quit; hand it the coalesced write so
+    // the last slider change or imported background is never lost.
+    this.registerEvent(this.app.workspace.on('quit', tasks => { this.flushSave(); tasks.addPromise(this.saveQueue.catch(() => undefined)); }));
     this.registerEvent(this.app.workspace.on('window-open', (_win, window) => {
       this.documents.add(window.document);
       this.applyDocument(window.document);
@@ -39,6 +48,8 @@ export default class KnowledgeSpacePlugin extends Plugin {
     }));
     this.register(() => {
       this.unloaded = true;
+      // Persist any coalesced change before the plugin goes away.
+      this.flushSave();
       for (const doc of this.documents) this.clearDocument(doc);
       this.documents.clear();
       this.localFonts?.dispose();
@@ -106,11 +117,8 @@ export default class KnowledgeSpacePlugin extends Plugin {
     body.dataset.knTone = s.tone;
     body.dataset.knBackground = s.background;
     body.style.setProperty('--kn-font-size', `${s.fontSize}px`);
-    body.style.setProperty('--kn-font', s.fontFamily === 'serif'
-      ? '"Iowan Old Style", "Songti TC", "Noto Serif TC", serif'
-      : s.fontFamily === 'jhenghei'
-        ? '"Knowledge Space JhengHei", "Microsoft JhengHei", "Microsoft JhengHei UI", "微軟正黑體", "PingFang TC", sans-serif'
-        : '"Helvetica Neue", "PingFang TC", "Noto Sans TC", sans-serif');
+    // 字型堆疊與外觀設定的預覽卡共用（font-stacks.ts）。
+    body.style.setProperty('--kn-font', fontStack(s.fontFamily));
     body.style.setProperty('--kn-ink-strength', `${s.inkStrength}%`);
     body.style.setProperty('--kn-content-width', `${s.contentWidth}px`);
     body.style.setProperty('--kn-page-gutter', `${s.pageGutter}px`);
@@ -118,8 +126,7 @@ export default class KnowledgeSpacePlugin extends Plugin {
     body.style.setProperty('--kn-background-blur', `${s.blur}px`);
     body.style.setProperty('--kn-panel-opacity', String(s.opacity / 100));
     // The setting is validated as a literal Vault-relative image path.
-    const resource = s.imagePath ? this.app.vault.adapter.getResourcePath(s.imagePath) : '';
-    body.style.setProperty('--kn-background-image', resource ? `url(${JSON.stringify(resource)})` : 'none');
+    body.style.setProperty('--kn-background-image', s.imagePath ? cssUrl(this.resourcePath(s.imagePath)) : 'none');
     if (s.fontFamily === 'jhenghei') void this.localFonts?.ensure(doc);
     else this.localFonts?.dispose(doc);
     this.appliedSettings.set(doc, signature);
@@ -144,15 +151,38 @@ export default class KnowledgeSpacePlugin extends Plugin {
     this.outlines.get(view)?.reveal();
   }
 
-  openAppearance(): void { new AppearanceModal(this).open(); }
+  openAppearance(onClose?: () => void): void { new AppearanceModal(this, onClose).open(); }
 
   updateSettings(patch: Partial<SpaceSettings>): Promise<void> {
     this.settings = normalizeSettings({ ...this.settings, ...patch });
     this.applyAppearance();
     this.syncOutlines();
+    return this.scheduleSave();
+  }
+
+  /** Apply immediately; coalesce the data.json write so a slider drag persists once. */
+  private scheduleSave(): Promise<void> {
+    if (this.saveTimer !== null) window.clearTimeout(this.saveTimer);
+    if (!this.pendingSave) {
+      let resolve!: () => void;
+      const done = new Promise<void>(r => { resolve = r; });
+      this.pendingSave = { done, resolve };
+    }
+    const pending = this.pendingSave;
+    this.saveTimer = window.setTimeout(() => this.flushSave(), 250);
+    return pending.done;
+  }
+
+  private flushSave(): void {
+    if (this.saveTimer !== null) { window.clearTimeout(this.saveTimer); this.saveTimer = null; }
+    const pending = this.pendingSave;
+    if (!pending) return;
+    this.pendingSave = null;
     const snapshot = { ...this.settings };
     this.saveQueue = this.saveQueue.catch(() => undefined).then(() => this.saveData(snapshot));
-    return this.saveQueue.catch(error => { console.error('Knowledge Space settings save failed', error); new Notice('筆記外觀儲存失敗，請確認儲存空間。'); });
+    void this.saveQueue
+      .catch(error => { console.error('Knowledge Space settings save failed', error); new Notice('筆記外觀儲存失敗，請確認儲存空間。'); })
+      .finally(() => pending.resolve());
   }
 
   async importBackground(file: File): Promise<void> {
@@ -176,6 +206,7 @@ class SpaceSettingTab extends PluginSettingTab {
     this.containerEl.empty();
     new Setting(this.containerEl).setName('筆記外觀與背景').setDesc('所有原生筆記直接套用相同外觀。閱讀與編輯照常使用，原有筆記內容與章節模板保留。');
     new Setting(this.containerEl).setName('套用到所有筆記').addToggle(toggle => toggle.setValue(this.plugin.settings.enabled).onChange(value => { void this.plugin.updateSettings({ enabled: value }); }));
-    new Setting(this.containerEl).setName('外觀與背景').addButton(button => button.setButtonText('開啟外觀設定').onClick(() => this.plugin.openAppearance()));
+    // 面板關閉後重繪，讓這裡的總開關反映面板內的變更。
+    new Setting(this.containerEl).setName('外觀與背景').addButton(button => button.setButtonText('開啟外觀設定').onClick(() => this.plugin.openAppearance(() => this.display())));
   }
 }

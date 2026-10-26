@@ -167,6 +167,14 @@ body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-con
   scrollbar-gutter: stable;
 }
 
+/* 正文寬度上限直接限制頂層正文容器，不依賴 Obsidian 的「限制編輯行寬」開關；
+   嵌入筆記與其他內層 sizer 不受影響。 */
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-reading-view > .markdown-preview-view > .markdown-preview-sizer,
+body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] > .view-content > .markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller > .cm-sizer {
+  max-width: var(--kn-content-width);
+  margin-inline: auto;
+}
+
 /* The existing preview/editor scrollers continue to own scrolling. */
 body.kn-native-enabled .workspace-leaf-content[data-type="markdown"] .markdown-reading-view > .markdown-preview-view {
   border-radius: 0;
